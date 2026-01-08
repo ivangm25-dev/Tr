@@ -2,6 +2,7 @@ package com.wigm.tr.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wigm.tr.entities.exception.ExcepcionGenerica;
+import com.wigm.tr.entities.exception.NoAutorizacion;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +19,12 @@ import java.util.Collections;
 @Component
 public class JwtFiltro  extends OncePerRequestFilter {
 
-    @Autowired
+
     private JwtUtil jwtUtil;
+
+    public JwtFiltro(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,7 +45,7 @@ public class JwtFiltro  extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
-                throw new ExcepcionGenerica("No autorizado");
+                throw new NoAutorizacion("No autorizado");
             }
         }
         filterChain.doFilter(request, response);
